@@ -43,8 +43,8 @@ class Dictionary():
             return False
         
     def add_word(self, word, translation=''):
-        ''' Add word to dictionary. If word is already in dictionary,
-            returns False, otherwise returns True
+        ''' Add word to dictionary. If 'translation' is not provided, search in online dictionary
+			If word is already in dictionary, returns False, otherwise returns True
         '''
         if (not self.find_word(word)):
             if (translation):
@@ -66,12 +66,9 @@ class Dictionary():
         pretty = 'true'     #pretty view of json file
         url_req = "https://glosbe.com/gapi/translate?from="+fromLang+"&dest="\
                   +destLang+"&format=json&phrase="+word+"&page=1&pretty="+pretty
-        #print (url_req)
         with urllib.request.urlopen(url_req) as resp:
             data = resp.read()
-            #print(data)
             jl = json.loads(data.decode('utf-8'))
-            #print(jl)
             resp.close()
         if (jl['result'] == 'ok') and (len(jl['tuc'])!=0) and ('phrase' in jl['tuc'][0]):
             print(word+' - ' + jl['tuc'][0]['phrase']['text'])
@@ -82,13 +79,13 @@ class Dictionary():
 
 my_dict = Dictionary('my_en_ru')
 #print(my_dict.dictData)
-my_dict.add_word('bike')
+my_dict.add_word('bike', 'мотоцикл')
 my_dict.add_word('as')
 my_dict.save()
 #print(my_dict.dictData)
 #print(my_dict.get_translation_from_web('idiosyncratic'))
 
-#del my_dict
+del my_dict
 
 my_dict = Dictionary('my_en_ru')
 print(my_dict.dictData)
