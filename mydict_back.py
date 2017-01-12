@@ -50,13 +50,13 @@ class Dictionary():
             if (translation):
                 self.dictData[word] = translation
             else:
-                self.dictData[word] = str(input("Enter translation of ( "+word+" ): "))
+                self.dictData[word] = self._get_translation_from_web(word)
             return True
         else:
-            print("Word ' {} ' is in dictionary already .".format(word.capitalize()))
+            print('Word "{} = {}" is in dictionary already .'.format(word, self.dictData[word]))
             return False
         
-    def get_translation_from_web(self, word):
+    def _get_translation_from_web(self, word):
         ''' gets the translation from glosbe.com in json formatted file
         '''
         #TODO: What if there is no internet connection?
@@ -82,8 +82,8 @@ class Dictionary():
 
 my_dict = Dictionary('my_en_ru')
 #print(my_dict.dictData)
-my_dict.add_word('spirit', my_dict.get_translation_from_web('spirit'))
-my_dict.add_word('hi')
+my_dict.add_word('bike')
+my_dict.add_word('as')
 my_dict.save()
 #print(my_dict.dictData)
 #print(my_dict.get_translation_from_web('idiosyncratic'))
