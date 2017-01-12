@@ -1,4 +1,3 @@
-Нет такого файла или каталога
 # -*- coding: utf-8 -*-
 
 import os
@@ -22,9 +21,7 @@ class Dictionary():
         '''
         if os.path.isfile(filename):
             with open(filename, 'r') as dictFile:
-                for line in dictFile:
-                    jl = json.loads(line)
-                    self.dictData[jl[0]] = jl[1]
+                self.dictData=json.load(dictFile)
                 dictFile.close()
         else:
             with open(filename, 'w') as dictFile:
@@ -34,9 +31,8 @@ class Dictionary():
         '''saves dictionary data to file
         '''        
         with open(self.filename, 'w') as dictFile:
-            for item in self.dictData.items():
-                dictFile.write(json.dumps(item, ensure_ascii = False))
-        dictFile.close()
+            dictFile.write(json.dumps(self.dictData, ensure_ascii = False))
+            dictFile.close()
             
     def find_word(self, word):
         ''' finds word in dictionary. If found returns True, otherwise False
@@ -46,41 +42,39 @@ class Dictionary():
         else:
             return False
         
-    def add_word(self, word):
+    def add_word(self, word, translation=''):
         ''' Add word to dictionary. If word is already in dictionary,
             returns False, otherwise returns True
         '''
         if (not self.find_word(word)):
-            self.dictData[word] = str(input("Enter translation of ( "+word+" ): "))
+            if (translation):
+                self.dictData[word] = translation
+            else:
+                self.dictData[word] = str(input("Enter translation of ( "+word+" ): "))
             return True
         else:
-            print("Word '{}' is in dictionary already .", word)
+            print("Word ' {} ' is in dictionary already .".format(word.capitalize()))
             return False
         
     def get_translation_from_web(self, word):
         ''' gets the translation from glosbe.com in json formatted file
         '''
+        #TODO: What if there is no internet connection?
+        
         fromLang = 'eng'    #original language
         destLang = 'rus'    #destination language
         pretty = 'true'     #pretty view of json file
-        url_req = "https://glosbe.com/gapi/translate?from="+fromLang+"&dest="                  +destLang+"&format=json&phrase="+word+"&page=1&pretty="+pretty
-        print (url_req)
+        url_req = "https://glosbe.com/gapi/translate?from="+fromLang+"&dest="\
+                  +destLang+"&format=json&phrase="+word+"&page=1&pretty="+pretty
+        #print (url_req)
         with urllib.request.urlopen(url_req) as resp:
             data = resp.read()
-            print(data)
+            #print(data)
             jl = json.loads(data.decode('utf-8'))
+            #print(jl)
             resp.close()
-            '''
-            with open(word+'.json', 'w') as tmpFile:
-                tmpFile.write(data.decode('utf-8'))
-                tmpFile.close()
-
-        with open(word+'.json', 'r') as tmpFile:
-            jl = json.load(tmpFile)
-            tmpFile.close()
-        '''
         if (jl['result'] == 'ok') and (len(jl['tuc'])!=0) and ('phrase' in jl['tuc'][0]):
-            print(word+' - ' + jl['tuc'][0]['phrase']['text']) #To-Do: add to dictionary.
+            print(word+' - ' + jl['tuc'][0]['phrase']['text'])
             return jl['tuc'][0]['phrase']['text']
         else:
             return False
@@ -88,13 +82,13 @@ class Dictionary():
 
 my_dict = Dictionary('my_en_ru')
 #print(my_dict.dictData)
-#my_dict.add_word('hello')
-#my_dict.save()
+my_dict.add_word('spirit', my_dict.get_translation_from_web('spirit'))
+my_dict.add_word('hi')
+my_dict.save()
 #print(my_dict.dictData)
-print(my_dict.get_translation_from_web('bolek'))
+#print(my_dict.get_translation_from_web('idiosyncratic'))
 
 #del my_dict
 
-#my_dict = Dictionary('my_en_ru')
-#print(my_dict.dictData)
-        
+my_dict = Dictionary('my_en_ru')
+print(my_dict.dictData)
