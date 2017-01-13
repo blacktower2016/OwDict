@@ -3,6 +3,7 @@
 import os
 import json
 import urllib.request
+import argparse
 
 class Dictionary():
     ''' Translation Dictionary class. Load dictionary from file
@@ -77,15 +78,30 @@ class Dictionary():
             return False
 
 
-my_dict = Dictionary('my_en_ru')
-#print(my_dict.dictData)
-my_dict.add_word('bike', 'мотоцикл')
-my_dict.add_word('as')
-my_dict.save()
-#print(my_dict.dictData)
-#print(my_dict.get_translation_from_web('idiosyncratic'))
 
-del my_dict
 
-my_dict = Dictionary('my_en_ru')
-print(my_dict.dictData)
+if __name__=='__main__':
+	
+	def cl_parse():
+		'''command line argument parser 
+			takes word to translate as an argument
+		'''
+		parser = argparse.ArgumentParser(description = "Takes a word in English and translate it into Russian")
+		parser.add_argument('word', type = str, help='A word to translate')
+		args=parser.parse_args()
+		return args.word
+		
+	print(cl_parse())
+	''' if runs as a script, not as imported module.'''
+	my_dict = Dictionary('my_en_ru')
+	#print(my_dict.dictData)
+	my_dict.add_word('bike', 'мотоцикл')
+	my_dict.add_word(cl_parse())
+	my_dict.save()
+	#print(my_dict.dictData)
+	#print(my_dict.get_translation_from_web('idiosyncratic'))
+
+	del my_dict
+
+	my_dict = Dictionary('my_en_ru')
+	print(my_dict.dictData)
