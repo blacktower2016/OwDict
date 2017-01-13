@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -36,26 +37,32 @@ class Dictionary():
             dictFile.close()
             
     def find_word(self, word):
-        ''' finds word in dictionary. If found returns True, otherwise False
+        ''' finds word in dictionary. If not found looking for word online.
+            If found returns word in translation, otherwise ''
         '''
         if (word in self.dictData.keys()):
             return self.dictData[word]
         else:
-            return False
+            if(self.add_word(word)!=False):
+                return self.dictData[word]
+            else:
+                return ''
         
     def add_word(self, word, translation=''):
         ''' Add word to dictionary. If 'translation' is not provided, search in online dictionary
 			If word is already in dictionary, returns False, otherwise returns True
         '''
-        if (not self.find_word(word)):
-            if (translation):
-                self.dictData[word] = translation
-            else:
-                self.dictData[word] = self._get_translation_from_web(word)
+        if (translation):
+            self.dictData[word] = translation
             return True
         else:
-            print('Word "{} = {}" is in dictionary already .'.format(word, self.dictData[word]))
-            return False
+            web_translation=self._get_translation_from_web(word)
+            print(web_translation)
+            if (web_translation!=False):
+                self.dictData[word] = web_translation
+                return True
+            else:
+                return False
         
     def _get_translation_from_web(self, word):
         ''' gets the translation from glosbe.com in json formatted file
@@ -67,20 +74,24 @@ class Dictionary():
         pretty = 'true'     #pretty view of json file
         url_req = "https://glosbe.com/gapi/translate?from="+fromLang+"&dest="\
                   +destLang+"&format=json&phrase="+word+"&page=1&pretty="+pretty
+        
         with urllib.request.urlopen(url_req) as resp:
             data = resp.read()
             jl = json.loads(data.decode('utf-8'))
             resp.close()
+            #print(jl)
         if (jl['result'] == 'ok') and (len(jl['tuc'])!=0) and ('phrase' in jl['tuc'][0]):
-            print(word+' - ' + jl['tuc'][0]['phrase']['text'])
+            #print(word+' - ' + jl['tuc'][0]['phrase']['text'])
             return jl['tuc'][0]['phrase']['text']
         else:
             return False
-
+        
 
 
 
 if __name__=='__main__':
+	
+	''' if runs as a script, not as imported module.'''
 	
 	def cl_parse():
 		'''command line argument parser 
@@ -91,12 +102,12 @@ if __name__=='__main__':
 		args=parser.parse_args()
 		return args.word
 		
-	print(cl_parse())
-	''' if runs as a script, not as imported module.'''
-	my_dict = Dictionary('my_en_ru')
+	#print(cl_parse())
+	
+	my_dict = Dictionary('my_en_ru')    
 	#print(my_dict.dictData)
-	my_dict.add_word('bike', 'мотоцикл')
-	my_dict.add_word(cl_parse())
+	#my_dict.add_word('bike', 'мотоцикл')
+	print("print my_dict.find_word(cl_parse(): "+str(my_dict.find_word(cl_parse())))
 	my_dict.save()
 	#print(my_dict.dictData)
 	#print(my_dict.get_translation_from_web('idiosyncratic'))
@@ -105,3 +116,5 @@ if __name__=='__main__':
 
 	my_dict = Dictionary('my_en_ru')
 	print(my_dict.dictData)
+
+        
