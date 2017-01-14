@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import os
+import os.path
 import json
 import urllib.request
 import argparse
 
 class Dictionary():
-    ''' Translation Dictionary class. Load dictionary from file
-        and store it as dict. 
+    ''' Translation Dictionary class. Loads dictionary from file
+        and stores it as dict. 
     '''
     dictData={}
     filename=''
@@ -37,9 +37,10 @@ class Dictionary():
             dictFile.close()
             
     def find_word(self, word):
-        ''' finds word in dictionary. If not found looking for word online.
+        ''' finds word in dictionary. If not found looks for the word online.
             If found returns word in translation, otherwise ''
         '''
+        #print(self.dictData.keys())
         if (word in self.dictData.keys()):
             return self.dictData[word]
         else:
@@ -49,15 +50,16 @@ class Dictionary():
                 return ''
         
     def add_word(self, word, translation=''):
-        ''' Add word to dictionary. If 'translation' is not provided, search in online dictionary
-			If word is already in dictionary, returns False, otherwise returns True
+        ''' adds word to dictionary. If 'translation' is not provided, 
+            searches in the online dictionary.
+            If word is already in the dictionary, returns False, otherwise returns True
         '''
         if (translation):
             self.dictData[word] = translation
             return True
         else:
             web_translation=self._get_translation_from_web(word)
-            print(web_translation)
+            #print(web_translation)
             if (web_translation!=False):
                 self.dictData[word] = web_translation
                 return True
@@ -66,6 +68,8 @@ class Dictionary():
         
     def _get_translation_from_web(self, word):
         ''' gets the translation from glosbe.com in json formatted file
+            If found, returns translation of the word (first in response)
+            otherwise returns False
         '''
         #TODO: What if there is no internet connection?
         
@@ -91,7 +95,7 @@ class Dictionary():
 
 if __name__=='__main__':
 	
-	''' if runs as a script, not as imported module.'''
+	''' if runs as a script, not as an imported module'''
 	
 	def cl_parse():
 		'''command line argument parser 
@@ -107,14 +111,14 @@ if __name__=='__main__':
 	my_dict = Dictionary('my_en_ru')    
 	#print(my_dict.dictData)
 	#my_dict.add_word('bike', 'мотоцикл')
-	print("print my_dict.find_word(cl_parse(): "+str(my_dict.find_word(cl_parse())))
+	print(str(my_dict.find_word(cl_parse())))
 	my_dict.save()
-	#print(my_dict.dictData)
+	#print(my_dict.dictData.keys())
 	#print(my_dict.get_translation_from_web('idiosyncratic'))
 
-	del my_dict
+	#del my_dict
 
-	my_dict = Dictionary('my_en_ru')
-	print(my_dict.dictData)
+	#my_dict = Dictionary('my_en_ru')
+	#print(my_dict.dictData)
 
         
