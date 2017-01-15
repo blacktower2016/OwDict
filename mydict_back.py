@@ -38,9 +38,10 @@ class Dictionary():
             
     def find_word(self, word):
         ''' finds word in dictionary. If not found looks for the word online.
-            If found returns word in translation, otherwise ''
+            If found returns word in translation, otherwise empty string ('')
         '''
         #print(self.dictData.keys())
+        word = word.lower()
         if (word in self.dictData.keys()):
             return self.dictData[word]
         else:
