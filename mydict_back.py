@@ -22,25 +22,26 @@ class Dictionary():
         ''' reads dictionary from file and stores it in dict self.dictData
         '''
         if os.path.isfile(filename):
-            with open(filename, 'r') as dictFile:
+            with open(filename, 'r', encoding = 'utf-8') as dictFile:
                 self.dictData=json.load(dictFile)
                 dictFile.close()
         else:
-            with open(filename, 'w') as dictFile:
+            with open(filename, 'w', encoding = 'utf-8') as dictFile:
                 dictFile.close()
             
     def save(self):        
         '''saves dictionary data to file
         '''        
-        with open(self.filename, 'w') as dictFile:
+        with open(self.filename, 'w', encoding = 'utf-8') as dictFile:
             dictFile.write(json.dumps(self.dictData, ensure_ascii = False))
             dictFile.close()
             
     def find_word(self, word):
-        ''' finds word in dictionary. If not found looks for the word online.
-            If found returns word in translation, otherwise ''
+        ''' searches for the word in dictionary. If not found looks for the word online.
+            If found returns word in translation, otherwise empty string ('')
         '''
         #print(self.dictData.keys())
+        word = word.lower()
         if (word in self.dictData.keys()):
             return self.dictData[word]
         else:
