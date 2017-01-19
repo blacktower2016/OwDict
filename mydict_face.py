@@ -31,6 +31,7 @@ transFrame = LabelFrame(root)
 transFrame.pack(side = 'bottom')
 txtWord = Entry(wordFrame, textvariable = word)	
 txtWord.pack(side = 'left')
+txtWord.focus_set()
 btn = Button(wordFrame, text="Find Word", bg="white", fg="black", command = find_word ) #width=10, height=2
 #btn.bind("<Button-1>", find_word)
 btn.pack(side = 'right')
