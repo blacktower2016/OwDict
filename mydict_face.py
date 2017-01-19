@@ -16,6 +16,7 @@ def p(event): #on window destroy saves dictionary file
     
 root.bind('<Destroy>',p)
 
+
 #def find_word(event): #for bind with event
 def find_word():
     #root.configure(cursor="watch")
@@ -37,5 +38,9 @@ btn = Button(wordFrame, text="Find Word", bg="white", fg="black", command = find
 btn.pack(side = 'right')
 lblTrans = Label(transFrame, bg="White", fg='black', textvariable=trans, font=('Times New Roman', 20), width = 25)
 lblTrans.pack()
+
+root.bind('<Destroy>',p)
+
+root.bind_all('<Return>', lambda e:find_word())
 
 root.mainloop()
