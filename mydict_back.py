@@ -104,7 +104,6 @@ def internet_on():
     return False
      
 
-
 if __name__=='__main__':
     
     ''' if runs as a script, not as an imported module'''

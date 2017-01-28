@@ -17,7 +17,6 @@ def p(event): #on window destroy saves dictionary file
     
 root.bind('<Destroy>',p)
 
-
 #def find_word(event): #for bind with event
 def find_word():
     root.configure(cursor="watch")
