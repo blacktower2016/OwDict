@@ -102,7 +102,7 @@ def internet_on():
     except urllib.error.URLError as err:
         pass #print(err)
     return False
-    
+     
 
 
 if __name__=='__main__':

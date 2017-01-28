@@ -5,7 +5,7 @@ from tkinter import *
 
 '''This is tkinter UI for owdict (mydict_back.py)
 '''
-
+ 
 root=Tk()
 root.resizable(False,False)
 mydict = Dictionary("my_en_ru")
