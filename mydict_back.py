@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import os.path
-#import json
-#import urllib.request
 import argparse
 import sqlite3
 
@@ -21,32 +19,6 @@ class Dictionary():
         self.records_number = self.db_word_count()
         self.langFrom = 'eng'
         self.langDest = 'rus'
-
-#============== get translation from web =====================================
-    # def _get_translation_from_web(self, word):
-    #     ''' gets the translation from glosbe.com in json formatted file
-    #         If found, returns translation of the word (first in response)
-    #         otherwise returns False
-    #         Raises urllib.error.URLError error in there is no internet connection.
-    #     '''
-    #
-    #     fromLang = 'eng'    #original language
-    #     destLang = 'rus'    #destination language
-    #     pretty = 'true'     #pretty view of json file
-    #     url_req = "https://glosbe.com/gapi/translate?from="+fromLang+"&dest="\
-    #               +destLang+"&format=json&phrase="+word+"&page=1&pretty="+pretty
-    #
-    #     with urllib.request.urlopen(url_req) as resp:
-    #         data = resp.read()
-    #         jl = json.loads(data.decode('utf-8'))
-    #         resp.close()
-    #         #print(jl)
-    #     if (jl['result'] == 'ok') and (len(jl['tuc'])!=0) and ('phrase' in jl['tuc'][0]):
-    #         #print(word+' - ' + jl['tuc'][0]['phrase']['text'])
-    #         return jl['tuc'][0]['phrase']['text']
-    #     else:
-    #         return False
-
 
 #========================= get translation from web with requests library ======
 
@@ -169,15 +141,15 @@ class Dictionary():
         and translation(or error message if attempt fails))
         '''
         conn = sqlite3.connect(self.dict_db)
+        # use sqlite3.Row to get column in result by name
+        conn.row_factory = sqlite3.Row
         c = conn.cursor()
-        #c.execute('''CREATE TABLE IF NOT EXISTS ex (id INTEGER PRIMARY KEY, word text, translation text)''')
         c.execute('''SELECT * FROM ex WHERE word=?''', (word,))
-        result_list = c.fetchall()
+        result = c.fetchone()
         conn.close()
-        if len(result_list)>0:
-            #print('FOUND: ')
-            #print(result_list)
-            return (True, result_list[0][2])
+        if result:
+            #   print(result.keys())
+            return True, result['translation']
         else:
             #print('Not found! Searching in web-dictionary...')
             try:
@@ -198,22 +170,10 @@ class Dictionary():
                 return (False, str(err))
                 #return False
 
-
-def internet_on():
-    #for timeout in [1,5]:
-    timeout = 1
-    try:
-        response=urllib.request.urlopen('http://glosbe.com',timeout=timeout)
-        return True
-    except urllib.error.URLError as err:
-        pass #print(err)
-    return False
-
-
 if __name__=='__main__':
 
     ''' if runs as a script, not as an imported module'''
-    #print(internet_on())
+
     def cl_parse():
         '''command line argument parser
             takes word to translate as an argument

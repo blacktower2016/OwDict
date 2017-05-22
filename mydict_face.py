@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from mydict_back import Dictionary, internet_on
+from mydict_back import Dictionary
 from urllib import error
 from tkinter import *
 from tkinter import messagebox
