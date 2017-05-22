@@ -1,2 +1,0 @@
-1. Fix dictionary file location. It has to be located in script dir.
-2. Change dictionary file for sqlite3 database
